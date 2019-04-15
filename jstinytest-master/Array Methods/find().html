@@ -1,0 +1,84 @@
+<script src="../tinytest.js"></script>
+<script>
+
+// Return Value:
+
+// The value of the first element in the array that satisfies the provided testing function; otherwise, undefined is returned.
+
+function find(array, callback, optionalThis) {
+  findCallback = callback;
+  var callbackCounter = 0;
+  
+  if (optionalThis) {
+    findCallback = callback.bind(optionalThis);
+  }
+
+  for (var i = 0; i < array.length; i++) {
+    var foundValue = findCallback(array[i], i, array);
+    callbackCounter++;
+    if (foundValue === true) {
+      return array[i];
+    }
+    if (foundValue === false && callbackCounter === array.length) {
+      return undefined;
+    } 
+  }
+};
+
+tests({
+
+  'It should run callback array.length times.':function() {
+    timesCallbackHasRun = 0;
+    find([1, 2, 3], function() {
+      timesCallbackHasRun++;
+    });
+    eq(timesCallbackHasRun, 3);
+  },
+
+  'It should have access to the first argument to the callback.':function() {
+    find([1], function(element) {
+        eq(element, 1);
+    });
+  },
+
+  'It should have access to the second argument to the callback.':function() {
+    find([1], function(element, index) {
+        eq(index, 0);
+    });
+  },
+
+  'It should have access to the originalArray.':function() {
+    var myArray = [1, 2, 3];
+    find(myArray, function(element, index, originalArray) {
+        eq(originalArray, myArray);
+    });
+  },
+
+  'It should find and return the first element that passes the condition.':function() {
+    var findElement = find([1, 2, 3], function(element) {
+        return element < 2;
+    });
+    eq(findElement, 1);
+  },
+
+  'It should be able to handle holes in the array.':function() {
+    var findElement = find([, , 1, 2, 3], function(element) {
+        return element < 2;
+    });
+    eq(findElement, 1);
+  },
+
+  'It should return undefined if no value meets the condition.':function() {
+    var findElement = find([3, 2, 3], function(element) {
+        return element < 2;
+    });
+    eq(findElement, undefined);
+  },
+
+  'It should have access to an optionalThis.':function() {
+    find([1], function() {
+      eq(this.optionalThis, "I should be visible!");
+    }, {optionalThis: "I should be visible!"});
+  }
+});
+</script>
