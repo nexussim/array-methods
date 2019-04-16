@@ -1,0 +1,80 @@
+<script src="../tinytest.js"></script>
+<script>
+
+function findIndex(array, callback, optionalThis) {
+    var findIndexCallback = callback;
+    var noElementsValue = -1;
+
+    if (optionalThis) {
+        findIndexCallback = callback.bind(optionalThis);
+    }
+
+    if (Object.keys(array).length === 0) {
+        return noElementsValue;
+    }
+
+    for (var i = 0; i < array.length; i++) {
+        findIndexResult = findIndexCallback(array[i], i, array);
+        if (findIndexResult === true) {
+            return i;
+        }
+    }
+}
+
+tests({
+
+  'It should run callback array.length times.':function() {
+    var timesCallbackHasRun = 0;
+    findIndex([1, 2, 3], function() {
+      timesCallbackHasRun++;
+    });
+    eq(timesCallbackHasRun, 3);
+  },
+
+  'It should have access to the first argument to the callback.':function() {
+    findIndex([1], function(element) {
+    eq(element, 1);
+    })
+  },
+
+ 'It should have access to the second argument to the callback.':function() {
+    findIndex([1], function(element, index) {
+    eq(index, 0);
+    });
+  },
+
+ 'It should have access to the third argument to the callback.':function() {
+    var testArray = [1, 2, 3];
+    var findIndexArray = findIndex(testArray, function(element, index, originalArray) {
+    eq(testArray, originalArray);
+    });
+  },
+
+  'It should return the first index of the element whos callback returns true.':function() {
+  var returnFindIndex = findIndex([70, 10, 15, 22, 25], function(element, index) {
+    return element < 15;
+    });
+    eq(returnFindIndex, 1)
+  },
+  
+  'It should return -1 if no elements found.':function() {
+    returnFindIndex = findIndex([], function(element, position) {
+    });
+    eq(returnFindIndex, -1)
+  },
+
+  'It should call callback for indexes not present in the array.':function() {
+    var timesCallbackHasRun = 0;
+    findIndex([, , 17, 13, 25], function(element, index) {
+      timesCallbackHasRun++;
+    });
+    eq(timesCallbackHasRun, 5);
+  },
+
+  'It should have access to the optional this.':function() {
+    findIndex([1], function() {
+      eq(this.description, 'Configurable this object');
+    }, {description: 'Configurable this object'})
+  }
+});
+</script>
