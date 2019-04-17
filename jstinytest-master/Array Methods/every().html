@@ -14,15 +14,15 @@ if (Object.keys(array).length === 0) {
   return true;
 }
 
-  for (var i = 0; i < array.length; i++) {
+    for (var i = 0; i < array.length; i++) {
     
-    if (i in array === false) {
-      timesCallbackHasRun++;
-    };
+      if (i in array === false) {
+        timesCallbackHasRun++;
+      };
 
-    if (i in array) {
-      everyResult = everyCallback(array[i], i, array);
-      timesCallbackHasRun++;
+      if (i in array) {
+        everyResult = everyCallback(array[i], i, array);
+        timesCallbackHasRun++;
 
       if (everyResult === true && timesCallbackHasRun === array.length) {
         return everyResult;
