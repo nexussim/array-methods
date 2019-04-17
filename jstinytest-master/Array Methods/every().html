@@ -1,0 +1,97 @@
+<script src='../tinytest.js'></script>
+<script>
+
+function every(array, callback, optionalThis) {
+var everyCallback = callback;
+var everyResult;
+var timesCallbackHasRun = 0;
+
+if (optionalThis) {
+  everyCallback = callback.bind(optionalThis);
+}
+
+if (Object.keys(array).length === 0) {
+  return true;
+}
+
+  for (var i = 0; i < array.length; i++) {
+    
+    if (i in array === false) {
+      timesCallbackHasRun++;
+    };
+
+    if (i in array) {
+      everyResult = everyCallback(array[i], i, array);
+      timesCallbackHasRun++;
+
+      if (everyResult === true && timesCallbackHasRun === array.length) {
+        return everyResult;
+      } 
+    }
+  }
+  return false;
+};
+
+tests({
+
+  'It should call callback array.length times.':function() {
+    var timesCallbackHasRun = 0;
+    every([1, 2, 3], function() {
+      timesCallbackHasRun++;
+    });
+    eq(timesCallbackHasRun, 3);
+  },
+
+  'It should have access to the first argument to the callback':function() {
+    every([1], function(element) {
+      eq(element, 1);
+    });
+  },
+
+  'It should have access to the second argument to the callback':function() {
+    every([1], function(element, index) {
+      eq(index, 0);
+    });
+  },
+
+  'It should have access to the original array as the third argument to the callback':function() {
+    var testArray = [1, 2, 3];
+    every(testArray, function(element, index, originalArray) {
+      eq(testArray, originalArray);
+    });
+  },
+
+  'It should return true if every element passes the condition':function() {
+    var everyResult = every([1, 2, 3], function(elements) {
+      return elements < 5;
+    });
+    eq(everyResult, true);
+  },
+
+  'It should return false if just one element doesnt pass the condition.':function() {
+    var everyResult = every([1, 2, 3], function(element) {
+      return element < 3;
+    });
+    eq(everyResult, false);
+  },
+
+  'It should skip holes in the array.':function() {
+    var everyResult = every([, , , 2, 3], function(elements) {
+      return elements < 5;
+    });
+    eq(everyResult, true);
+  },
+
+  'It should always return true if no elements are present in the array.':function() {
+    var everyResult = every([], function() {
+    });
+    eq(everyResult, true);
+  },
+
+  'It should have access to an optional this.':function() {
+    every([1], function() {
+      eq(this.description, 'Can you see me?');
+    }, {description: 'Can you see me?'});
+  }
+});
+</script>
