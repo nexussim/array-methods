@@ -1,0 +1,91 @@
+<script src="../tinytest.js"></script>
+<script>
+
+function some(array, callback, optionalThis) {
+var someCallback = callback;
+var someResult;
+
+  if (arguments.length === 3) {
+    someCallback = callback.bind(optionalThis);
+  }
+
+  if (Object.keys(array).length === 0) {
+    return false;
+  }
+  
+  for (var i = 0; i < array.length; i++) {
+    if (i in array) {
+      result = someCallback(array[i], i, array);
+    }
+    if (result === true) {
+      return result;
+    }
+  }
+  return false;
+};
+
+
+tests({
+  'It should run callback array.length times.':function() {
+    var timesCallbackHasRun = 0;
+    some([1, 2, 3], function() {
+      timesCallbackHasRun++;
+    });
+    eq(timesCallbackHasRun, 3);
+  },
+
+  'It should have access to the first argument to the callback.':function() {
+    var someFunction = some([1], function(element) {
+      eq(element, 1);
+    });
+  },
+
+  'It should have access to the second argument to the callback.':function() {
+    var someFunction = some([1], function(element, index) {
+      eq(index, 0);
+    });
+  },
+
+  'It should have access to the original array.':function() {
+    var testArray = [1, 2, 3];
+    var someFunction = some(testArray, function(element, index, originalArray) {
+      eq(testArray, originalArray);
+    });
+  },
+
+  'It should return true for the first value that satisfies the condition. ':function() {
+    var someFunction = some([55, 10, 22, 38,], function(element) {
+      return element < 25;
+    });
+    eq(someFunction, true);
+  },
+
+  'It should return false if no value satisfies the condition':function() {
+    var someFunction = some([55, 10, 22, 38,], function(element) {
+      return element < 5;
+    });
+    eq(someFunction, false);
+  },
+
+  'It should exclude holes in the array without calling callback on them.':function() {
+    var someFunction = some([, 10, , 45, 69],function(element) {
+      return element > 40; 
+    });
+    eq(someFunction, true);
+
+  },
+
+  'It should return false if the array is empty.':function() {
+    var someFunction = some([],function(element) {
+      return element > 40; 
+    });
+    eq(someFunction, false);
+  },
+
+  'It should have access to optional this.':function() {
+    some([1], function(element) {
+      eq(this.description, 'Im visible!');
+    }, {description: 'Im visible!'});
+  }
+});
+</script>
