@@ -1,0 +1,103 @@
+<script src="../tinytest.js"></script>
+<script>
+
+// PROTOTYPE:
+
+  // function concat() {
+  //   var concatArray = [];
+  //   for (var i = 0; i < arguments.length; i++) {
+  //     if (Array.isArray(arguments[i])) {
+  //       for (var j = 0; j < arguments[i].length; j++) {
+  //       var arrayElement = arguments[i];
+  //         concatArray.push(arrayElement[j]);
+  //       }
+  //     }
+  //   }
+  //   return concatArray;
+  // }
+
+
+// FUNCTION PURPOSE:
+
+  // The concat() method is used to merge two or more arrays. This method does not change the existing arrays, but instead returns a new array.
+
+// REQUIREMENTS:
+
+  // It should accept arguments that are not arrays
+  // It should return a new array consisting of all elements combined from the arrays passed in.
+  // It should not recurse into nested array arguments.
+  // It should not alter the original arrays.
+  // It should refer to the same object for both the original arrays and the shallow copy.
+  // It should copy the values of strings and numbers into the new array.
+
+function concat() {
+  var concatArray = [];
+    for (var i = 0; i < arguments.length; i++) {
+      if (Array.isArray(arguments[i])) {
+        for (var j = 0; j < arguments[i].length; j++) {
+          var arrayElement = arguments[i];
+          concatArray.push(arrayElement[j]);
+        }
+      } else {
+        concatArray.push(arguments[i]);
+      }
+    }
+    return concatArray;
+  }
+
+
+tests({
+
+  'It should return a new array consisting of all elements combined from the arrays passed in.': function () {
+    var firstArray = [1, 2, 3, 4];
+    var secondArray = [5, 6, 7, 8];
+    var concatArray = concat(firstArray, secondArray);
+    eq(Array.isArray(concatArray), true);
+  },
+
+  'It should return a new array consisting of all elements combined from the arrays passed in.': function () {
+    var firstArray = [1, 2, 3, 4];
+    var secondArray = [5, 6, 7, 8];
+    var concatArray = concat(firstArray, secondArray);
+    eq(concatArray[3], 4);
+    eq(concatArray[5], 6);
+    eq(concatArray[6], 7);
+  },
+
+  'It should copy the values of strings and numbers into the new array.': function () {
+    var firstArray = [1, 2, 3, 4];
+    var secondArray = [5, 6, 'g', 8];
+    var concatArray = concat(firstArray, secondArray);
+    eq(concatArray[2], 3);
+    eq(concatArray[4], 5);
+    eq(concatArray[6], 'g');
+
+  },
+
+  'It should not recurse into nested array arguments.': function () {
+    var firstArray = [[1, 2]];
+    var secondArray = [5, 6, 'g', 8];
+    concat(firstArray, secondArray);
+    eq(Array.isArray(firstArray[0]), true);
+  },
+
+  'It should accept arguments that are not arrays.': function () {
+    var firstArray = [[1, 2]];
+    var secondArray = {};
+    var concatArray = concat(firstArray, secondArray);
+    eq(Array.isArray(secondArray), false);
+  },
+
+  'It should not alter the original arrays.': function () {
+    var firstArray = [1, 2];
+    var secondArray = [5, 6];
+    var concatArray = concat(firstArray, secondArray);
+    eq(firstArray[0], 1);
+    eq(firstArray[1], 2);
+    eq(secondArray[0], 5);
+    eq(secondArray[1], 6);
+    eq(firstArray.length, 2);
+    eq(secondArray.length, 2);
+  },
+});
+</script>
