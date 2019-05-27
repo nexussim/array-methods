@@ -1,0 +1,89 @@
+<script src="../tinytest.js"></script>
+<script>
+
+// Prototype:
+  // function indexOf(array, searchElement) {
+  //   for (var i = 0; i < array.length; i++) {
+  //     if (array[i] === searchElement) {
+  //       return i;
+  //     }
+  //   }
+  //   return -1;
+  // }
+
+
+// Function Purpose:
+
+  // indexOf() compares searchElement to elements of the Array using strict equality (the same method used by the === or triple-equals operator).
+
+// Parameters:
+
+  // currentValue
+  // currentIndex
+
+// Requirements:
+
+  // If the index is greater than or equal to the array's length, -1 is returned.
+  // It should return an index.
+  // If the provided index is negative, the array is still searched from front to back. 
+  // It should begin seaching from the given index if one is provided.
+  // If the provided index is 0, then the whole array will be searched.
+  // It should include the index of holes in the array
+
+
+  function indexOf(array, searchElement, fromIndex) {
+    var startingIndex = 0;
+    if (fromIndex >= array.length) {
+      return -1;
+    }
+    if (fromIndex) {
+      if(fromIndex < 0) {
+        startingIndex = array.length + fromIndex;
+      } else {
+        startingIndex = fromIndex;
+      }
+    }
+    for (var i = startingIndex; i < array.length; i++) {
+      if (array[i] === searchElement) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+
+
+tests({
+  'It should return -1 if the index is greater than or equal to the arrays length.':function() {
+    var testArray = [1, 2, 3];
+    var indexOfVariable = indexOf(testArray, 4) 
+    eq(indexOfVariable, -1)
+  },
+
+  'It should return an index.':function() {
+    var testArray = [1, 2, 3];
+    var indexOfVariable = indexOf(testArray, 3);
+    var indexOfVariable2 = indexOf(testArray, 1); 
+    eq(indexOfVariable, 2)
+    eq(indexOfVariable2, 0)
+  },
+
+  'It should begin seaching from the given index if one is provided.':function() {
+    var testArray = [1, 2, 3, 4, 1, 2, 3, 4];
+    var indexOfVariable = indexOf(testArray, 3, 4);
+    eq(indexOfVariable, 6);
+  },
+
+  'It should search the entire array if 0 is the provided index.':function() {
+    var testArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    var indexOfVariable = indexOf(testArray, 9, 0);
+    eq(indexOfVariable, 8);
+  },
+
+  'It should include the index of holes in the array':function() {
+    var testArray = [1, 2, 3, 4, , , 7, 8, 9];
+    var indexOfVariable = indexOf(testArray, 9, 0);
+    eq(indexOfVariable, 8);
+  },
+});
+</script>
