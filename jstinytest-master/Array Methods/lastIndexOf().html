@@ -1,0 +1,78 @@
+<script src="../tinytest.js"></script>
+<script>
+
+// Prototype:
+  // function indexOf(array, searchElement) {
+  //   for (var i = array.length - 1; i >= 0; i--) {
+  //     if (array[i] === searchElement) {
+  //       return i;
+  //     }
+  //   }
+  //   return -1;
+  // }
+
+
+// Function Purpose:
+
+  // The lastIndexOf() method returns the last index at which a given element can be found in the array, or -1 if it is not present. The array is searched backwards, starting at fromIndex.
+
+// Parameters:
+
+  // searchElement
+  // fromIndex
+
+
+  function lastIndexOf(array, searchElement, fromIndex) {
+    var startingIndex = array.length - 1;
+    
+    if (fromIndex) {
+      if(fromIndex < 0) {
+        startingIndex = array.length + fromIndex;
+      } else {
+        startingIndex = fromIndex;
+      }
+    }
+    for (var i = startingIndex; i >= 0; i--) {
+      if (array[i] === searchElement) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+
+
+tests({
+  'It should return -1 if the index is greater than or equal to the arrays length.':function() {
+    var testArray = [1, 2, 3];
+    var lastIndexOfVariable = lastIndexOf(testArray, 4) 
+    eq(lastIndexOfVariable, -1);
+  },
+
+  'It should return an index.':function() {
+    var testArray = [1, 2, 3];
+    var lastIndexOfVariable = lastIndexOf(testArray, 3);
+    var lastIndexOfVariable2 = lastIndexOf(testArray, 1); 
+    eq(lastIndexOfVariable, 2);
+    eq(lastIndexOfVariable2, 0);
+  },
+
+  'It should begin seaching from the given index if one is provided.':function() {
+    var testArray = [1, 2, 3, 4, 1, 2, 3, 4];
+    var lastIndexOfVariable = lastIndexOf(testArray, 3, 4);
+    eq(lastIndexOfVariable, 2);
+  },
+
+  'It should search the entire array if 0 is the provided index.':function() {
+    var testArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    var lastIndexOfVariable = lastIndexOf(testArray, 9, 0);
+    eq(lastIndexOfVariable, 8);
+  },
+
+  'It should include the index of holes in the array':function() {
+    var testArray = [1, 2, 3, 4, , , 7, 8, 9];
+    var lastIndexOfVariable = lastIndexOf(testArray, 9, 0);
+    eq(lastIndexOfVariable, 8);
+  },
+});
+</script>
