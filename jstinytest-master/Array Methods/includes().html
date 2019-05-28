@@ -1,0 +1,126 @@
+<script src='../tinytest.js'></script>
+<script>
+
+//FUNCTION PROTOTYPE:
+
+  // function includes(array, valueToFind, fromIndex) {
+  //   var startingValue = 0;
+  //   if (arguments.length < 2) {
+  //     return false;
+  //   }
+  
+  //   if (fromIndex < 0) {
+  //     startingValue = array.length + fromIndex - 1;
+  //   }
+  //     for (var i = startingValue; i < array.length; i++) {
+  //       if (array[i] === valueToFind) {
+  // 		return true;
+  //       }
+  //     }
+  
+  //   if (fromIndex) {
+  //     startingValue = fromIndex;
+  //   }
+  //   for (var i = startingValue; i < array.length; i++) {
+  //     if (array[i] === valueToFind) {
+  // 	  return true;
+  //     }
+  //   }
+  //   return false;
+  // }
+
+
+//FUNCTION PURPOSE
+
+  //The includes() method determines whether an array includes a certain value among its entries, returning true or false as appropriate.
+
+//PARAMETERS
+
+  //valueToFind
+  //fromIndex
+
+
+function includes(array, valueToFind, fromIndex) {
+  var startingValue = 0;
+  if (arguments.length < 2) {
+    return false;
+  }
+  
+  if (fromIndex >= array.length) {
+      return false;
+  }
+
+  if (fromIndex < 0) {
+    startingValue = array.length + fromIndex - 1;
+  }
+  for (var i = startingValue; i < array.length; i++) {
+    if (array[i] === valueToFind) {
+  	  return true;
+    }
+  }
+  
+  if (fromIndex) {
+    startingValue = fromIndex;
+  }
+  for (var i = startingValue; i < array.length; i++) {
+    if (array[i] === valueToFind) {
+  	  return true;
+    }
+  }
+  return false;
+}
+
+tests({
+  'It should return true if valueToFind is found, false if not.':function() {
+    var testArray = [1, 2, 3, 4];
+    var includesFunction1 = includes(testArray, 2, 0);
+    var includesFunction2 = includes(testArray, 5, 0);
+    eq(includesFunction1, true);
+    eq(includesFunction2, false);
+  },
+
+  'It should include the index of holes in the array':function() {
+    var testArray = [1, 2, 3, 4, , ,1, 2, 3, 4];
+    var includesFunction = includes(testArray, 1, 2);
+    eq(includesFunction, true);
+  },
+
+  'It should return false if no valueToFind is found':function() {
+    var testArray = [1, 2, 3, 4, 1, 2, 3, 4];
+    var includesFunction = includes(testArray, 5);
+    eq(includesFunction, false);
+  },
+
+  'It should consider 0 to be equal to -0 and +0.':function() {
+    var testArray = [1, 2, 3, 4, 0, 2, 3, 4];
+    var includesFunction1 = includes(testArray, -0);
+    var includesFunction2 = includes(testArray, +0);
+    eq(includesFunction1, true);
+    eq(includesFunction2, true);
+  },
+  
+  'It should be case sensitive with strings.':function() {
+    var testArray = ['tHis', 'Is', 'a', 'TEst'];
+    var includesFunction1 = includes(testArray, 'tHis');
+    var includesFunction2 = includes(testArray, 'is');
+    var includesFunction3 = includes(testArray, 'TEst', 2);
+    eq(includesFunction1, true);
+    eq(includesFunction2, false);
+    eq(includesFunction3, true);
+  },
+
+  'It should count front to back even with negative values.':function() {
+    var testArray = [1, 2, 3, 4, 1, 2, 3, 4];
+    var includesFunction = includes(testArray, 3, -7);
+    eq(includesFunction, true);
+  },
+
+  'It should return false and not search the array if fromIndex is greater than or equal to array.length.':function() {
+    var testArray = [1, 2, 3, 4];
+    var includesFunction1 = includes(testArray, 4, 4);
+    var includesFunction2 = includes(testArray, 4, 100);
+    eq(includesFunction1, false);
+    eq(includesFunction2, false);
+  }
+});
+</script>
